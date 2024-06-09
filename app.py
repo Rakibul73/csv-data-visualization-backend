@@ -30,6 +30,19 @@ class Data(db.Model):
             'volume': self.volume
         }
 
+
+@app.route('/data_without_pagination', methods=['GET', 'POST'])
+def data_without_pagination():
+    if request.method == 'POST':
+        new_data = request.get_json()
+        db.session.add(Data(**new_data))
+        db.session.commit()
+        return jsonify(new_data), 201
+    data = Data.query.all()
+    return jsonify([d.serialize() for d in data])
+
+
+
 @app.route('/data', methods=['GET', 'POST'])
 def manage_data():
     if request.method == 'POST':
